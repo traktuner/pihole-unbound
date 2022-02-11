@@ -1,0 +1,23 @@
+name: check-pi-hole-version
+on:
+  schedule:
+    - cron:  '*/5 * * * *'
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+      - name: Fetch release version
+        run: |
+          curl --silent "https://api.github.com/repos/pi-hole/docker-pi-hole/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' > VERSION
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
+      - name: Commit latest release version
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name '${{ github.repository_owner }}'
+          git commit -am "New release version"
+          git push
