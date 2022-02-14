@@ -1,7 +1,7 @@
 name: check-pi-hole-version
 on:
   schedule:
-    - cron:  '* * * * *'
+    - cron:  '0 */3 * * *'
 jobs:
   get-version:
     runs-on: ubuntu-latest
