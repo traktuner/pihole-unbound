@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.GHCR_TOKEN }}
       - name: Fetch release version
         run: |
           curl --silent "https://api.github.com/repos/pi-hole/docker-pi-hole/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' > VERSION
